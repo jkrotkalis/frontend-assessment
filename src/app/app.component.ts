@@ -1,11 +1,12 @@
 import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { FrontendAssessment } from './features/frontend-assessment/frontend-assessment.component';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
-  templateUrl: './app.component.html',
-  styleUrl: './app.component.css'
+  imports: [FrontendAssessment],
+  template: `
+    <frontend-assessment />
+  `
 })
 export class AppComponent {
   title = 'frontend-assessment';
