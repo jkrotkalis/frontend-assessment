@@ -1,5 +1,11 @@
 # FrontendAssessment
 
+# USES NODE VERSION 22.13.0
+
+## Some context
+
+I made the (poor) decision to learn Angular 19 on the fly while doing this assigment, as such it took quite a bit longer than 3 hours.
+
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.2.12.
 
 ## Development server
