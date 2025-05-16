@@ -2,6 +2,9 @@ import { Component, input, computed, signal, model } from "@angular/core";
 import { Folder } from "../domain/folder.type";
 import { Item } from "../domain/item.type";
 import { SelectableItem } from "./selectable-item.component";
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { faChevronUp, faChevronDown } from '@fortawesome/free-solid-svg-icons';
+
 
 /**
  * A collapsable folder which can recursively render nested folders and items and be selected.
@@ -13,9 +16,13 @@ import { SelectableItem } from "./selectable-item.component";
  */
 @Component({
   selector: 'collapsable-folder',
-  imports: [SelectableItem],
+  imports: [SelectableItem, FontAwesomeModule],
   template: `
-    <div><input type="checkbox" [indeterminate]="isIndeterminate()" [checked]="isSelected()" (click)="toggleSelected($event)"/>{{ title() }} <button (click)="toggleCollapse()">collapse</button></div>
+    <div>
+      <input type="checkbox" [indeterminate]="isIndeterminate()" [checked]="isSelected()" (click)="toggleSelected($event)"/>
+      {{ title() }} 
+      <fa-icon [icon]="getIcon()" (click)="toggleCollapse()" />
+    </div>
     @if (!collapsed()) {
       @for (folder of childFolders(); track folder.id) {
         <collapsable-folder [id]="folder.id" [title]="folder.title" [folders]="folders()" [items]="items()" [(selection)]="selection"/>
@@ -33,6 +40,10 @@ export class CollapsableFolder {
   items = input<Item[]>([]);
   selection = model<number[]>([]);
   collapsed = signal(false)
+
+  // Icons
+  faChevronUp = faChevronUp
+  faChevronDown = faChevronDown
 
   // Gets folders that are direct children
   childFolders = computed(() => {
@@ -77,6 +88,10 @@ export class CollapsableFolder {
     if (this.selection().length == 0 || this.isSelected()) return false;
 
     return this.getAllChildItemIds().some((id) => this.selection().includes(id));
+  })
+
+  getIcon = computed(() => {
+    return this.collapsed() ? faChevronDown : faChevronUp
   })
 
   toggleSelected = (event: Event) => {
