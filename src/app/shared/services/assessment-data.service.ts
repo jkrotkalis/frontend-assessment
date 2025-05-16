@@ -18,8 +18,14 @@ export class AssessmentDataService {
       map(data => {
         let mappedData = <AssessmentData>{};
 
-        mappedData.folders = data.folders.data.map(folder =>  ({ id: folder[0], title: folder[1], parent_id: folder[2]} as Folder))
-        mappedData.items = data.items.data.map(item => ({ id: item[0], title: item[1], folder_id: item[2]} as Item)) 
+        mappedData.folders = data.folders.data
+          .map(folder =>  ({ id: folder[0], title: folder[1], parent_id: folder[2]} as Folder))
+          // Sort alphabetically
+          .sort((a, b) => a.title.localeCompare(b.title))
+        mappedData.items = data.items.data
+          .map(item => ({ id: item[0], title: item[1], folder_id: item[2]} as Item))
+          // Sort alphabetically
+          .sort((a, b) => a.title.localeCompare(b.title))
 
         return mappedData
       }
