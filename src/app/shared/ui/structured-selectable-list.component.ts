@@ -1,4 +1,4 @@
-import { Component, input, output, computed } from "@angular/core";
+import { Component, input, computed, model } from "@angular/core";
 import { Folder } from "../domain/folder.type";
 import { Item } from "../domain/item.type";
 import { CollapsableFolder } from "./collapsable-folder.component";
@@ -19,8 +19,6 @@ import { CollapsableFolder } from "./collapsable-folder.component";
       }
 
     </div>
-      <!-- Current selection: {{ selection.toString() }}
-      <button (click)="clearSelection()">Clear</button> -->
   `,
   styles: `
     div {
@@ -33,13 +31,9 @@ import { CollapsableFolder } from "./collapsable-folder.component";
 export class StructuredList {
   folders = input<Folder[]>([])
   items = input<Item[]>([])
-  selection = []
+  selection = model<number[]>([]);
 
   topLevelFolders = computed(() => {
     return this.folders().filter((folder) => folder.parent_id == null)
   })
-
-  clearSelection = () => {
-    this.selection = []
-  }
 }
