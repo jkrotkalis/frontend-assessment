@@ -4,19 +4,56 @@ import { Item } from "../domain/item.type";
 
 /**
  * A selectable item.
- * @param {<Item>} item Selectable child items
+ * @param {<number>} id Item id
+ * @param {<string>} title Item title
  */
 @Component({
   selector: 'selectable-item',
   template: `
-    <div><input type="checkbox" [checked]="isSelected()" (click)="toggleSelected()"/> {{ title() }} </div>
+    <div [style.padding-left.px]="16 * (nestingDepth() + 1)">
+      <input type="checkbox" [name]="title()+id()" [checked]="isSelected()" (click)="toggleSelected()"/>
+      <label [for]="title()+id()" (click)="toggleSelected()">{{ title() }}</label>
+    </div>
   `,
+  styles: `
+    div {
+      display: flex;
+      align-items: center;
+
+      font-family: sans-serif;
+      font-size: 14px;
+      line-height: 141%;
+      letter-spacing: 0%;
+
+      height: 34px;
+
+      cursor: pointer;
+
+      &:hover {
+        background: #F5F5F5;
+      }
+
+      label {
+        width: 100%;
+        margin-left: 5px;
+        cursor: pointer;
+        user-select: none; 
+      }
+    }
+
+    input {
+      width: 20px;
+      height: 20px;   
+      cursor: pointer;
+    }
+
+  `
 })
 export class SelectableItem {
   id = input.required<number>();
   title = input.required<string>();
-  item = input<Item>
   selection = model<number[]>([]);
+  nestingDepth = input(0)
 
   isSelected = computed((): boolean => {
     return this.selection().includes(this.id())

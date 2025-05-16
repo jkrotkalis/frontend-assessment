@@ -10,28 +10,63 @@ import { faChevronUp, faChevronDown } from '@fortawesome/free-solid-svg-icons';
  * A collapsable folder which can recursively render nested folders and items and be selected.
  * @param {number} id Folder id
  * @param {string} title Folder title
- * @param {<Folder>[]} folders Child folders
- * @param {<Item>[]} items Selectable child items
- * @emits selected
+ * @param {<Folder>[]} folders All folders
+ * @param {<Item>[]} items All items
  */
 @Component({
   selector: 'collapsable-folder',
   imports: [SelectableItem, FontAwesomeModule],
   template: `
-    <div>
-      <input type="checkbox" [indeterminate]="isIndeterminate()" [checked]="isSelected()" (click)="toggleSelected($event)"/>
-      {{ title() }} 
-      <fa-icon [icon]="getIcon()" (click)="toggleCollapse()" />
+    <div [style.padding-left.px]="16 * (nestingDepth() + 1)">
+      <input type="checkbox" [name]="title()+id()" [indeterminate]="isIndeterminate()" [checked]="isSelected()" (click)="toggleSelected()"/>
+      <label [for]="title()+id()" (click)="toggleSelected()">{{ title() }}</label> 
+      <fa-icon [icon]="getIcon()" (click)="toggleCollapse()" size="xs" />
     </div>
     @if (!collapsed()) {
       @for (folder of childFolders(); track folder.id) {
-        <collapsable-folder [id]="folder.id" [title]="folder.title" [folders]="folders()" [items]="items()" [(selection)]="selection"/>
+        <collapsable-folder [id]="folder.id" [title]="folder.title" [folders]="folders()" [items]="items()" [(selection)]="selection" [nestingDepth]="nestingDepth() + 1"/>
       }
       @for (item of childItems(); track item.id) {
-        <selectable-item [id]="item.id" [title]="item.title"  [(selection)]="selection"/>
+        <selectable-item [id]="item.id" [title]="item.title"  [(selection)]="selection" [nestingDepth]="nestingDepth() + 1"/>
       }
     }
   `,
+  styles: `
+    div {
+      display: flex;
+      justify-content: space-between; 
+      align-items: center;
+
+      font-family: sans-serif;
+      font-weight: 600;
+      font-size: 14px;
+      line-height: 141%;
+      letter-spacing: 0%;
+
+      height: 34px;
+      padding: 0 16px;
+
+      cursor: pointer;
+
+      &:hover {
+        background: #F5F5F5;
+      }
+
+      label {
+        width: 100%;
+        margin-left: 5px;
+        cursor: pointer;
+        user-select: none; 
+      }
+    }
+
+    input {
+      width: 20px;
+      height: 20px;   
+      cursor: pointer;
+    }
+
+  `
 })
 export class CollapsableFolder {
   id = input.required<number>();
@@ -40,6 +75,7 @@ export class CollapsableFolder {
   items = input<Item[]>([]);
   selection = model<number[]>([]);
   collapsed = signal(false)
+  nestingDepth = input(0)
 
   // Icons
   faChevronUp = faChevronUp
@@ -94,9 +130,7 @@ export class CollapsableFolder {
     return this.collapsed() ? faChevronDown : faChevronUp
   })
 
-  toggleSelected = (event: Event) => {
-    console.log(this.getAllChildFolderIds(), this.getAllChildItemIds())
-    event.preventDefault()
+  toggleSelected = () => {
     if (this.isSelected()) {
       this.selection.update((currentValue) => currentValue.filter(value => !this.getAllChildItemIds().includes(value)))
     } else {

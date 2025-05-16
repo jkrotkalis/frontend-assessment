@@ -5,9 +5,8 @@ import { CollapsableFolder } from "./collapsable-folder.component";
 
 /**
  * A structured list with selectable items.
- * @param {<Array<Folder>>} folders Folders to display
- * @param {<Array<Item>>} items Selectable items to show in folders
- * @emits valueChanged Returns an array of selected ids
+ * @param {<Folder>[]} folders Folders to display
+ * @param {<Item>[]} items Items to display
  */
 @Component({
   selector: 'structured-list',
@@ -22,6 +21,13 @@ import { CollapsableFolder } from "./collapsable-folder.component";
     </div>
       <!-- Current selection: {{ selection.toString() }}
       <button (click)="clearSelection()">Clear</button> -->
+  `,
+  styles: `
+    div {
+      border: 1px solid #E3E3E3;
+      border-radius: 3px;
+      width: 275px;
+    }
   `
 })
 export class StructuredList {
